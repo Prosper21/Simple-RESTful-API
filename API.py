@@ -2,10 +2,12 @@
 # The API is used to store users' details
 
 from flask import Flask
-from flask_restful import Api, Resource, reqparse
+from flask_restplus import Api, Resource, reqparse
 
 app = Flask(__name__)
 api = Api(app)
+
+name_space = api.namespace('main', description='RESTful API')
 
 users = [
 	{
@@ -25,6 +27,8 @@ users = [
 	}
 ]
 
+# set up the API resource routing
+@name_space.route("/user/<string:name>")
 class User(Resource):
 	def get(self, name):
 		"""retrieves a particular user's details
@@ -82,8 +86,6 @@ class User(Resource):
 		users = [user for user in users if user[name]!= name]
 		return "User {} was deleted".format(name), 200
 
-# set up the API resource routing
-api.add_resource(User, "/user/<string:name>")
 
 if __name__ == '__main__':
 	app.run(debug=True)
